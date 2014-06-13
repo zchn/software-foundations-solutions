@@ -1077,7 +1077,10 @@ Definition option_elim (d : nat) (o : natoption) : nat :=
    have to pass a default element for the [nil] case.  *)
 
 Definition hd_opt (l : natlist) : natoption :=
-  (* FILL IN HERE *) admit.
+  match l with
+    | nil => None
+    | h :: t => Some h
+  end.
 
 Example test_hd_opt1 : hd_opt [] = None.
 Proof. reflexivity. Qed.
@@ -1095,8 +1098,10 @@ Proof. reflexivity. Qed.
 Theorem option_elim_hd : forall (l:natlist) (default:nat),
   hd default l = option_elim default (hd_opt l).
 Proof.
- Proof. reflexivity. Qed.
-(** [] *)
+  intros. induction l.
+  reflexivity.
+  simpl. reflexivity. Qed.
+  (** [] *)
 
 (* ###################################################### *)
 (** * Dictionaries *)
@@ -1144,8 +1149,10 @@ Fixpoint find (key : nat) (d : dictionary) : natoption :=
 Theorem dictionary_invariant1' : forall (d : dictionary) (k v: nat),
   (find k (insert k v d)) = Some v.
 Proof.
-Proof. reflexivity. Qed.
-(** [] *)
+  intros. simpl.
+  rewrite <- beq_nat_refl.
+  reflexivity. Qed.
+  (** [] *)
 
 (** **** Exercise: 1 star (dictionary_invariant2) *)
 (** Complete the following proof. *)
@@ -1153,8 +1160,8 @@ Proof. reflexivity. Qed.
 Theorem dictionary_invariant2' : forall (d : dictionary) (m n o: nat),
   beq_nat m n = false -> find m d = find m (insert n o d).
 Proof.
-Proof. reflexivity. Qed.
-(** [] *)
+  intros. simpl. rewrite H. reflexivity. Qed.
+ (** [] *)
 
 
 
