@@ -668,16 +668,27 @@ Definition de_morgan_not_and_not := forall P Q:Prop,
 Definition implies_to_or := forall P Q:Prop, 
   (P->Q) -> (~P\/Q). 
 
-Check peirce.
+Theorem peirce_equiv_classic : peirce <-> classic.
+  compute.
+  split.
+  intros.
+  apply H with (Q:=False).
+  intros.
+  apply H0 in H1.
+  inversion H1.
+  intros.
+  apply H.
+  intros.
+  apply H1 in H0.
+  inversion H0.
+  intros.
+  apply H1 in H2.
+  inversion H2.
+  Qed.
 
-Theorem admit_peirce :
-  peirce.
-Proof. TODO(zchn)
+(** TODO: bookmarking **)  
   
-(* FILL IN HERE *)
-(** [] *)
-
-(** **** Exercise: 3 stars (excluded_middle_irrefutable)  *)
+  (** **** Exercise: 3 stars (excluded_middle_irrefutable)  *)
 (** This theorem implies that it is always safe to add a decidability
 axiom (i.e. an instance of excluded middle) for any _particular_ Prop [P].
 Why? Because we cannot prove the negation of such an axiom; if we could,
