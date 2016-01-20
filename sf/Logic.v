@@ -238,10 +238,12 @@ Theorem and_assoc : forall P Q R : Prop,
 Proof.
   intros P Q R H.
   destruct H as [HP [HQ HR]].
-(* FILL IN HERE *) Admitted.
-(** [] *)
-
-
+  split.
+  split.
+  apply HP.
+  apply HQ.
+  apply HR.
+  Qed.
 
 (* ###################################################### *)
 (** * Iff *)
@@ -377,8 +379,19 @@ Proof.
 Theorem or_distributes_over_and_2 : forall P Q R : Prop,
   (P \/ Q) /\ (P \/ R) -> P \/ (Q /\ R).
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
+  intros.
+  destruct H.
+  destruct H.
+  apply or_introl.
+  apply H.
+  destruct H0.
+  apply or_introl.
+  apply H0.
+  apply or_intror.
+  split.
+  apply H.
+  apply H0.
+Qed.
 
 (** **** Exercise: 1 star, optional (or_distributes_over_and)  *)
 Theorem or_distributes_over_and : forall P Q R : Prop,
@@ -421,15 +434,37 @@ Proof.
 (** **** Exercise: 2 stars, optional (andb_false)  *)
 Theorem andb_false : forall b c,
   andb b c = false -> b = false \/ c = false.
-Proof. 
-  (* FILL IN HERE *) Admitted.
+Proof.
+  intros.
+  destruct b.
+  destruct c.
+  inversion H.
+  apply or_intror.
+  reflexivity.
+  destruct c.
+  apply or_introl.
+  reflexivity.
+  apply or_introl.
+  reflexivity.
+  Qed.
+
+
+  
 
 (** **** Exercise: 2 stars, optional (orb_false)  *)
 Theorem orb_prop : forall b c,
   orb b c = true -> b = true \/ c = true.
 Proof.
-  (* FILL IN HERE *) Admitted.
-
+  intros.
+  destruct b.
+  apply or_introl.
+  reflexivity.
+  destruct c.
+  apply or_intror.
+  reflexivity.
+  inversion H.
+  Qed.
+  
 (** **** Exercise: 2 stars, optional (orb_false_elim)  *)
 Theorem orb_false_elim : forall b c,
   orb b c = false -> b = false /\ c = false.
@@ -504,8 +539,10 @@ Proof.
     intution is that [True] should be a proposition for which it is
     trivial to give evidence.) *)
 
-(* FILL IN HERE *)
-(** [] *)
+Inductive True : Prop :=
+  | maketrue.
+Check maketrue.
+
 
 (** However, unlike [False], which we'll use extensively, [True] is
     used fairly rarely. By itself, it is trivial (and therefore
@@ -570,7 +607,16 @@ Proof.
 Theorem contrapositive : forall P Q : Prop,
   (P -> Q) -> (~Q -> ~P).
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros.
+  unfold not.
+  intros.
+  apply H in H1.
+  destruct H0.
+  apply H1.
+  Qed.
+
+
+  
 (** [] *)
 
 (** **** Exercise: 1 star (not_both_true_and_false)  *)
@@ -622,6 +668,12 @@ Definition de_morgan_not_and_not := forall P Q:Prop,
 Definition implies_to_or := forall P Q:Prop, 
   (P->Q) -> (~P\/Q). 
 
+Check peirce.
+
+Theorem admit_peirce :
+  peirce.
+Proof. TODO(zchn)
+  
 (* FILL IN HERE *)
 (** [] *)
 
