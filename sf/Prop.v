@@ -386,15 +386,37 @@ Proof.
 
 Lemma helper_g_times2 : forall x y z, x + (z + y) = z + x + y.
 Proof.
-   (* FILL IN HERE *) Admitted.
+  intros.
+  rewrite plus_comm.
+  rewrite <- plus_assoc.
+  rewrite plus_comm with (y) (x).
+  rewrite plus_assoc.
+  reflexivity.
+Qed.
 
 Theorem g_times2: forall n, gorgeous n -> gorgeous (2*n).
 Proof.
    intros n H. simpl. 
    induction H.
-   (* FILL IN HERE *) Admitted.
-(** [] *)
-
+   simpl.
+   apply g_0.
+   rewrite helper_g_times2.
+   rewrite helper_g_times2.
+   rewrite helper_g_times2.
+   simpl.
+   apply g_plus3.
+   apply g_plus3.
+   rewrite <- plus_assoc.
+   apply IHgorgeous.
+   rewrite helper_g_times2.
+   rewrite helper_g_times2.
+   rewrite helper_g_times2.
+   simpl.
+   apply g_plus5.
+   apply g_plus5.
+   rewrite <- plus_assoc.
+   apply IHgorgeous.
+Qed.
 
 
 (** Here is a proof that the inductive definition of evenness implies
@@ -540,8 +562,19 @@ Proof.
 Theorem ev_ev__ev : forall n m,
   ev (n+m) -> ev n -> ev m.
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
+  intros n m H H0.
+  generalize dependent m.
+  induction H0.
+  intros.
+  simpl in H.
+  apply H.
+  intros.
+  simpl in H.
+  apply ev_minus2 in H.
+  simpl in H.
+  apply IHev.
+  apply H.
+Qed.  
 
 (** **** Exercise: 3 stars, optional (ev_plus_plus)  *)
 (** Here's an exercise that just requires applying existing lemmas.  No
@@ -644,10 +677,42 @@ Qed.
        forall l, pal (l ++ rev l).
     - Prove [pal_rev] that 
        forall l, pal l -> l = rev l.
-*)
+ *)
 
-(* FILL IN HERE *)
-(** [] *)
+Inductive pal {X : Type} : list X -> Prop :=
+| pal_0 : pal []
+| pal_1 : forall x, pal [x]
+| pal_l : forall x l, pal l -> pal (x :: snoc l x).
+
+Theorem pal_app_rev {X:Type} :
+  forall l : list X, pal (l ++ rev l).
+Proof.
+  intros.
+  induction l.
+  simpl.
+  apply pal_0.
+  simpl.
+  rewrite <- snoc_with_append.
+  apply pal_l.
+  apply IHl.
+Qed.
+
+
+Theorem pal_rev {X:Type} :
+  forall l : list X, pal l -> l = rev l.
+Proof.
+  intros.
+  induction H.
+  simpl.
+  reflexivity.
+  simpl.
+  reflexivity.
+  simpl.
+  rewrite rev_snoc.
+  simpl.
+  rewrite <- IHpal.
+  reflexivity.
+Qed.
 
 (* Again, the converse direction is much more difficult, due to the
 lack of evidence. *)
@@ -658,11 +723,19 @@ lack of evidence. *)
      forall l, l = rev l -> pal l.
 *)
 
-(* FILL IN HERE *)
-(** [] *)
-
-
-
+(* Theorem rev_pal {X:Type} : *)
+(*   forall l : list X, l = rev l -> pal l. *)
+(* Proof. *)
+(*   intros l. *)
+(*   destruct l. *)
+(*   intros. *)
+(*   apply pal_0. *)
+(*   simpl. *)
+(*   destruct (rev l). *)
+(*   intros. *)
+(*   simpl in H. *)
+  
+  
 (* ####################################################### *)
 (** ** Relations *)
 
