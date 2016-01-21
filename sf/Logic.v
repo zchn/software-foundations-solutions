@@ -686,19 +686,26 @@ Theorem peirce_equiv_classic : peirce <-> classic.
   inversion H2.
   Qed.
 
-(** TODO: bookmarking **)  
   
-  (** **** Exercise: 3 stars (excluded_middle_irrefutable)  *)
+(** **** Exercise: 3 stars (excluded_middle_irrefutable)  *)
 (** This theorem implies that it is always safe to add a decidability
 axiom (i.e. an instance of excluded middle) for any _particular_ Prop [P].
 Why? Because we cannot prove the negation of such an axiom; if we could,
 we would have both [~ (P \/ ~P)] and [~ ~ (P \/ ~P)], a contradiction. *)
 
-Theorem excluded_middle_irrefutable:  forall (P:Prop), ~ ~ (P \/ ~ P).  
+Theorem excluded_middle_irrefutable:  forall (P:Prop), ~ ~ (P \/ ~ P).
 Proof.
-  (* FILL IN HERE *) Admitted.
-
-
+  intros.
+  unfold not.
+  intros.
+  apply H.
+  right.
+  intros.
+  apply H.
+  left.
+  apply H0.
+  Qed.
+  
 (* ########################################################## *)
 (** ** Inequality *)
 
@@ -740,17 +747,63 @@ Proof.
 Theorem false_beq_nat : forall n m : nat,
      n <> m ->
      beq_nat n m = false.
-Proof. 
-  (* FILL IN HERE *) Admitted.
-(** [] *)
+Proof.
+  intros n.
+  induction n.
+  induction m.
+  intros.
+  apply ex_falso_quodlibet.
+  unfold not in H.
+  apply H.
+  reflexivity.
+  intros.
+  compute.
+  reflexivity.
+  induction m.
+  intros.
+  compute.
+  reflexivity.
+  intros.
+  simpl.
+  apply IHn.
+  compute.
+  compute in H.
+  intros.
+  apply H.
+  rewrite H0.
+  reflexivity.
+  Qed.
 
 (** **** Exercise: 2 stars, optional (beq_nat_false)  *)
 Theorem beq_nat_false : forall n m,
   beq_nat n m = false -> n <> m.
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
-
+  intros n.
+  induction n.
+  induction m.
+  compute.
+  intros.
+  inversion H.
+  intros.
+  compute.
+  intros.
+  inversion H0.
+  induction m.
+  intros.
+  compute.
+  intros.
+  inversion H0.
+  intros.
+  simpl in H.
+  apply IHn in H.
+  compute.
+  intros.
+  apply H.
+  inversion H0.
+  reflexivity.
+  Qed.  
+  
+  
 
 (** $Date: 2014-12-31 11:17:56 -0500 (Wed, 31 Dec 2014) $ *)
 
