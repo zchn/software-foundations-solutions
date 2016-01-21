@@ -193,15 +193,45 @@ Qed.
 (** **** Exercise: 2 stars (b_times2)  *)
 Theorem b_times2: forall n, beautiful n -> beautiful (2*n).
 Proof.
-    (* FILL IN HERE *) Admitted.
-(** [] *)
+  induction n.
+  intros.
+  compute.
+  apply b_0.
+  intros.
+  unfold mult.
+  apply b_sum with (n:=S n) (m:=(S n + 0)).
+  apply H.
+  apply b_sum with (n:=S n) (m:=0).
+  apply H.
+  apply b_0.
+  Qed.
+
 
 (** **** Exercise: 3 stars (b_timesm)  *)
 Theorem b_timesm: forall n m, beautiful n -> beautiful (m*n).
 Proof.
-   (* FILL IN HERE *) Admitted.
-(** [] *)
-
+  intros n.
+  induction n.
+  induction m.
+  intros.
+  compute.
+  apply b_0.
+  intros.
+  simpl.
+  apply IHm.
+  apply H.
+  induction m.
+  simpl.
+  intros.
+  apply b_0.
+  intros.
+  simpl.
+  apply b_sum with (n:=S n) (m:=m*S n).
+  apply H.
+  apply IHm.
+  apply H.
+  Qed.
+  
 
 (* ####################################################### *)
 (** * Using Evidence in Proofs *)
@@ -306,13 +336,45 @@ Qed.
 Theorem gorgeous_sum : forall n m,
   gorgeous n -> gorgeous m -> gorgeous (n + m).
 Proof.
- (* FILL IN HERE *) Admitted.
-(** [] *)
+  intros n m H.
+  induction H.
+  intros.
+  induction H.
+  simpl.
+  apply g_0.
+  simpl.
+  apply g_plus3.
+  apply IHgorgeous.
+  apply g_plus5.
+  apply IHgorgeous.
+  intros.
+  simpl.
+  apply g_plus3.
+  apply IHgorgeous.
+  apply H0.
+  intros.
+  simpl.
+  apply g_plus5.
+  apply IHgorgeous.
+  apply H0.
+  Qed.
+  
 
 (** **** Exercise: 3 stars, advanced (beautiful__gorgeous)  *)
 Theorem beautiful__gorgeous : forall n, beautiful n -> gorgeous n.
 Proof.
- (* FILL IN HERE *) Admitted.
+  intros.
+  induction H.
+  apply g_0.
+  apply g_plus3.
+  apply g_0.
+  apply g_plus5.
+  apply g_0.
+  apply gorgeous_sum.
+  apply IHbeautiful1.
+  apply IHbeautiful2.
+  Qed.
+  
 (** [] *)
 
 
