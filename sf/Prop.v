@@ -723,17 +723,64 @@ lack of evidence. *)
      forall l, l = rev l -> pal l.
 *)
 
+(* Theorem snoc_inversion {X : Type} : *)
+(*   forall (x: X) (l1: list X) (l2: list X), snoc l1 x = snoc l2 x -> l1 = l2. *)
+(* Proof. *)
+(*   intros x. *)
+(*   induction l1. *)
+(*   intros. *)
+(*   simpl in H. *)
+(*   destruct l2. *)
+(*   reflexivity. *)
+(*   inversion H. *)
+(* Got this and can't proceed: *)
+(*   2 subgoals, subgoal 1 (ID 665) *)
+  
+(*   X : Type *)
+(*   x : X *)
+(*   x0 : X *)
+(*   l2 : list X *)
+(*   H : [x] = snoc (x0 :: l2) x *)
+(*   H1 : x = x0 *)
+(*   H2 : [] = snoc l2 x0 *)
+(*   ============================ *)
+(*    [] = x0 :: l2 *)
+
+(* subgoal 2 (ID 629) is: *)
+(*  forall l2 : list X, snoc (x0 :: l1) x = snoc l2 x -> x0 :: l1 = l2 *)
+  
+  
+    
+Theorem rev_me_rev_next {X : Type} :
+  forall x: X, forall l : list X, l = rev l -> snoc (x :: l) x = rev (snoc (x :: l) x).
+Proof.
+  simpl.
+  intros.
+  rewrite rev_snoc with (s:=l) (v:=x).
+  intros.
+  rewrite <- H.
+  simpl.
+  reflexivity.
+Qed.
+    
+(* Theorem rev_me_rev_prev {X : Type} : *)
+(*   forall x: X, forall l : list X, snoc (x :: l) x = rev (snoc (x :: l) x) -> l = rev l. *)
+(* Proof. *)
+(*   simpl. *)
+(*   rewrite rev_snoc with (s:=l) (v:=x). *)
+(*   simpl. *)
+(*   intros. *)
+(*   inversion H. *)
+(*   induction l. *)
+(*   simpl. *)
+(*   reflexivity. *)
+(* needed snoc_inversion here    *)
+
+
 (* Theorem rev_pal {X:Type} : *)
 (*   forall l : list X, l = rev l -> pal l. *)
 (* Proof. *)
-(*   intros l. *)
-(*   destruct l. *)
-(*   intros. *)
-(*   apply pal_0. *)
-(*   simpl. *)
-(*   destruct (rev l). *)
-(*   intros. *)
-(*   simpl in H. *)
+(*   (stuck, don't know how to perform induction on all {l : l = rev l}) *)  
   
   
 (* ####################################################### *)
@@ -824,12 +871,18 @@ Inductive next_even : nat -> nat -> Prop :=
 (** Define an inductive binary relation [total_relation] that holds
     between every pair of natural numbers. *)
 
+Inductive total_relation : nat -> nat -> Prop :=
+  total_rel : forall (n:nat) (m:nat), total_relation n m.
+
 (* FILL IN HERE *)
 (** [] *)
 
 (** **** Exercise: 2 stars (empty_relation)  *)
 (** Define an inductive binary relation [empty_relation] (on numbers)
     that never holds. *)
+
+Inductive empty_relation : nat -> nat -> Prop := 
+  empty_rel : forall (n:nat) (m:nat), n > m -> m > n -> empty_relation n m.
 
 (* FILL IN HERE *)
 (** [] *)
@@ -841,36 +894,65 @@ Inductive next_even : nat -> nat -> Prop :=
 
 Lemma le_trans : forall m n o, m <= n -> n <= o -> m <= o.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros.
+  induction H0.
+  apply H.
+  apply le_S.
+  apply IHle.
+Qed.
 
 Theorem O_le_n : forall n,
   0 <= n.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  induction n.
+  apply le_n.
+  apply le_S.
+  apply IHn.
+Qed.  
 
 Theorem n_le_m__Sn_le_Sm : forall n m,
   n <= m -> S n <= S m.
-Proof. 
-  (* FILL IN HERE *) Admitted.
-
+Proof.
+  intros.
+  induction H.
+  apply le_n.
+  apply le_S.
+  apply IHle.
+Qed.
 
 Theorem Sn_le_Sm__n_le_m : forall n m,
   S n <= S m -> n <= m.
-Proof. 
-  (* FILL IN HERE *) Admitted.
-
+Proof.
+  intros n m H.
+  inversion H.
+  apply le_n.
+  apply le_trans with (n:= S n).
+  apply le_S.
+  apply le_n.
+  apply H1.
+Qed.  
+  
 
 Theorem le_plus_l : forall a b,
   a <= a + b.
-Proof. 
-  (* FILL IN HERE *) Admitted.
+Proof.
+  intros.
+  induction b.
+  rewrite plus_0_r.
+  apply le_n.
+  apply le_trans with (n:= a+b).
+  apply IHb.
+  rewrite <- plus_n_Sm.
+  apply le_S.
+  apply le_n.
+Qed.
 
 Theorem plus_lt : forall n1 n2 m,
   n1 + n2 < m ->
   n1 < m /\ n2 < m.
 Proof. 
  unfold lt. 
- (* FILL IN HERE *) Admitted.
+(* FILL IN HERE *) Admitted.
 
 Theorem lt_S : forall n m,
   n < m ->
