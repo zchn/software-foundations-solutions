@@ -64,7 +64,7 @@ Check next_nat : relation nat.
 
 Theorem next_nat_partial_function : 
    partial_function next_nat.
-Proof. 
+Proof.
   unfold partial_function.
   intros x y1 y2 H1 H2.
   inversion H1. inversion H2.
@@ -84,7 +84,7 @@ Proof.
    Case "Proof of assertion".
    apply Hc with (x := 0). 
      apply le_n. 
-     apply le_S. apply le_n. 
+     apply le_S. apply le_n.
   inversion Nonsense.   Qed.
 
 (** **** Exercise: 2 stars, optional  *)
@@ -106,6 +106,8 @@ Proof.
 
 Definition reflexive {X: Type} (R: relation X) :=
   forall a : X, R a a.
+
+Check reflexive.
 
 Theorem le_reflexive :
   reflexive le.
@@ -147,7 +149,11 @@ Proof.
   unfold lt. unfold transitive.
   intros n m o Hnm Hmo.
   induction Hmo as [| m' Hm'o].
-    (* FILL IN HERE *) Admitted.
+  apply le_S.
+  apply Hnm.
+  apply le_S.
+  apply IHHm'o.
+  Qed.
 (** [] *)
 
 (** **** Exercise: 2 stars, optional  *)

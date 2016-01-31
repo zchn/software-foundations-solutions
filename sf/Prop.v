@@ -951,7 +951,7 @@ Theorem plus_lt : forall n1 n2 m,
   n1 + n2 < m ->
   n1 < m /\ n2 < m.
 Proof. 
- unfold lt. 
+  unfold lt.
 (* FILL IN HERE *) Admitted.
 
 Theorem lt_S : forall n m,

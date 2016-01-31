@@ -526,13 +526,23 @@ Proof.
     as elegant as possible. *)
 
 Fixpoint optimize_0plus_b (b : bexp) : bexp :=
-  (* FILL IN HERE *) admit.
+  match b with
+  | BEq a1 a2   => BEq (optimize_0plus a1) (optimize_0plus a2)
+  | BLe a1 a2   => BLe (optimize_0plus a1) (optimize_0plus a2)
+  | _ => b
+  end.
 
 
 Theorem optimize_0plus_b_sound : forall b,
   beval (optimize_0plus_b b) = beval b.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros b.
+  induction b;
+    try simpl;
+    try (rewrite optimize_0plus_sound);
+    try (rewrite optimize_0plus_sound);
+    try reflexivity.
+  Qed.
 (** [] *)
 
 (** **** Exercise: 4 stars, optional (optimizer)  *)
