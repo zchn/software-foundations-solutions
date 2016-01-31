@@ -553,6 +553,8 @@ Proof.
 
 (* FILL IN HERE *)
 *)
+Fixpoint optimize_ultimate (a:aexp) : aexp := ANum (aeval a).
+  
 (** [] *)
 
 (* ####################################################### *)
