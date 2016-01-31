@@ -821,11 +821,43 @@ Qed.
 (** Write a relation [bevalR] in the same style as
     [aevalR], and prove that it is equivalent to [beval].*)
 
-(* 
-Inductive bevalR:
-(* FILL IN HERE *)
-*)
-(** [] *)
+Inductive bevalR : bexp -> bool -> Prop :=
+| E_BTrue : bevalR BTrue true
+| E_BFalse : bevalR BFalse false
+| E_BEq : forall (a1 a2: aexp) (n1 n2: nat),
+            a1 || n1 -> a2 || n2 ->
+            bevalR (BEq a1 a2) (beq_nat n1 n2)
+| E_BLe : forall (a1 a2: aexp) (n1 n2: nat),
+            a1 || n1 -> a2 || n2 ->
+            bevalR (BLe a1 a2) (ble_nat n1 n2)
+| E_BNot : forall (b: bexp) (bo: bool),
+             bevalR b bo ->
+             bevalR (BNot b) (negb bo)
+| E_BAnd : forall (b1 b2: bexp) (bo1 bo2: bool),
+             bevalR b1 bo1 ->
+             bevalR b2 bo2 ->
+             bevalR (BAnd b1 b2) (andb bo1 bo2).
+
+Theorem beval_iff_bevalR : forall b bo,
+                             bevalR b bo <-> beval b = bo.
+Proof.
+  split.
+  Case "->".
+  intros H. induction H; subst; try reflexivity; try constructor; simpl;
+            apply aeval_iff_aevalR in H;
+            apply aeval_iff_aevalR in H0; subst; reflexivity.
+  Case "<-".
+  generalize dependent bo.
+  induction b;
+    intros; subst; simpl;
+    constructor;
+    try (apply aeval_iff_aevalR);
+    try reflexivity.
+  apply IHb. reflexivity.
+  apply IHb1. reflexivity.
+  apply IHb2. reflexivity.
+  Qed.
+  
 End AExp.
 
 (* ####################################################### *)
